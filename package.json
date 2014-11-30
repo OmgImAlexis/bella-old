@@ -1,0 +1,19 @@
+{
+  "name": "ducking-octo-spice",
+  "version": "1.0.0",
+  "description": "ducking-octo-spice ==================",
+  "main": "ducking-octo-spice.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OmgImAlexis/ducking-octo-spice.git"
+  },
+  "author": "OmgImAlexis",
+  "license": "WTFPL",
+  "bugs": {
+    "url": "https://github.com/OmgImAlexis/ducking-octo-spice/issues"
+  },
+  "homepage": "https://github.com/OmgImAlexis/ducking-octo-spice"
+}
