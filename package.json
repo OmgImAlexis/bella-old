@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/OmgImAlexis/ducking-octo-spice/issues"
   },
-  "homepage": "https://github.com/OmgImAlexis/ducking-octo-spice"
+  "homepage": "https://github.com/OmgImAlexis/ducking-octo-spice",
+  "dependencies": {
+    "express": "^4.10.4",
+    "jade": "^1.8.0",
+    "node-ffprobe": "^1.2.2"
+  }
 }
