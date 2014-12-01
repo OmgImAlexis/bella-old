@@ -19,6 +19,9 @@
   "dependencies": {
     "express": "^4.10.4",
     "jade": "^1.8.0",
-    "node-ffprobe": "^1.2.2"
+    "mongoose": "^3.8.19",
+    "node-ffprobe": "^1.2.2",
+    "node-kickass-json": "^0.1.1",
+    "thetvdb-api": "^0.1.0"
   }
 }

@@ -1,0 +1,23 @@
+extends ./layout
+
+block head
+    link(href="http://192.168.1.180:8081/css/dark.css?1098", rel="stylesheet")
+
+block content
+    #subMenu
+        span
+            a.btn(href="/addShow")
+                | Add show
+            a.btn(href="/postProcess")
+                | Post processing
+            a.btn(href="/updatePLEX")
+                | Update PLEX
+            a.btn(href="/manageTorrents")
+                | Manage Torrents
+            a.btn(href="/restart")
+                | Restart
+            a.btn(href="/shutdown")
+                | Shutdown
+    form(action="/api/tvDB/", method="GET")
+        input(type="text")
+        input(type="submit")

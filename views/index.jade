@@ -1,12 +1,41 @@
-html
-    head
-        title
-        style.
-            body{margin:0;background:black;}
-            video{top:0;left:0;position:absolute;width:100%;height:100%;}
-        link(href="//vjs.zencdn.net/4.10/video-js.css")
-        script(src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js")
-        script(src="//vjs.zencdn.net/4.10/video.js")
-        script(src="/js/player.js")
-    body
-        video#video.video-js.vjs-default-skin(src="/movie/3454534.mp4", controls)
+extends ./layout
+
+block head
+    link(href="http://192.168.1.180:8081/css/dark.css?1098", rel="stylesheet")
+
+block content
+    #subMenu
+        span
+            a.btn(href="/addShow")
+                | Add show
+            a.btn(href="/postProcess")
+                | Post processing
+            a.btn(href="/updatePLEX")
+                | Update PLEX
+            a.btn(href="/manageTorrents")
+                | Manage Torrents
+            a.btn(href="/restart")
+                | Restart
+            a.btn(href="/shutdown")
+                | Shutdown
+    table#shows.tablesorter
+        thead
+            tr
+                th Next ep
+                th Show
+                th Network
+                th Quality
+                th Downloads
+                th Active
+                th Status
+        tbody
+            each show in shows
+                tr
+                    td(align="center") #{show.nextep}
+                    td(align="center") 
+                        a(href='/show/' + show.imdbID) #{show.title}
+                    td(align="center") #{show.network}
+                    td(align="center") #{show.quality}
+                    td(align="center") #{show.downloadsDone} + #{show.downloadsPending}/#{show.episodes}
+                    td(align="center") #{show.active}
+                    td(align="center") #{show.status}
