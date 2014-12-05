@@ -32,8 +32,11 @@ block content
             each show in shows
                 tr
                     td(align="center") #{show.nextep}
-                    td(align="center") 
-                        a(href='/show/' + show.imdbID) #{show.title}
+                    td(align="center")
+                        span(style="display:none;") #{show.title}
+                        .imgbanner.banner
+                            a(href='/show/' + show.imdbID)
+                                img(src="/showBanner/" + show.imdbID, title=show.title).banner
                     td(align="center") #{show.network}
                     td(align="center") #{show.quality}
                     td(align="center") #{show.downloadsDone} + #{show.downloadsPending}/#{show.episodes}
