@@ -1,0 +1,51 @@
+extends ./layout
+
+block head
+    link(href="http://192.168.1.180:8081/css/dark.css?1098", rel="stylesheet")
+
+block content
+    #subMenu
+        span
+            a.btn(href="/addShow")
+                | Add show
+            a.btn(href="/postProcess")
+                | Post processing
+            a.btn(href="/updatePLEX")
+                | Update PLEX
+            a.btn(href="/manageTorrents")
+                | Manage Torrents
+            a.btn(href="/restart")
+                | Restart
+            a.btn(href="/shutdown")
+                | Shutdown
+    table#shows.tablesorter
+        thead
+            tr
+                th.col-checkbox
+                    input(type="checkbox").seasonCheck
+                th NFO
+                th TBN
+                th Episode
+                th Name
+                th Airdate
+                th Status
+                th Search
+        tbody
+            each episode in episodes
+                tr.seasonstyle
+                    td.col-checkbox
+                        input(type="checkbox", class="epCheck", id=episode.seasonNumber + "x" + episode.episodeNumber, name=episode.seasonNumber + "x" + episode.episodeNumber)
+                    td(align="center")
+                        img(src="http://192.168.1.180:8081/images/nfo-no.gif", width="23", height="11", alt="N")
+                    td(align="center")
+                        img(src="http://192.168.1.180:8081/images/tbn-no.gif", width="23", height="11", alt="N")
+                    td(align="center") #{episode.episodeNumber}
+                    td.col-name
+                        img(src="http://192.168.1.180:8081/images/info32.png", width="16", height="16").plotInfo
+                        | #{episode.title}
+                    td.col-airdata
+                        span.airdate never
+                    td.col-status Wanted
+                    td.col-search
+                        a.epSearch(id=episode.seasonNumber + "x" + episode.episodeNumber, name=episode.seasonNumber + "x" + episode.episodeNumber, href="#")
+                            img(src="http://192.168.1.180:8081/images/search16.png", width="16", height="16", title="Manual Search")

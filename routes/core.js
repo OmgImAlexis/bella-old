@@ -16,10 +16,13 @@ module.exports = function (app) {
         });
     });
 
-    app.get('/show/:imdbID', function(req, res){
-        Show.find({imdbID: req.params.imdbID}).exec(function(err, shows) {
-            res.render('index', {
-                shows: shows
+    app.get('/show/:seriesId', function(req, res){
+        Show.find({seriesId: req.params.seriesId}).exec(function(err, show) {
+            Episode.find({seriesId: req.params.seriesId}).exec(function(err, episodes) {
+                res.render('show', {
+                    show: show,
+                    episodes: episodes
+                });
             });
         });
     });
@@ -28,14 +31,16 @@ module.exports = function (app) {
         res.render('addShow');
     });
 
-    app.get('/addShow/:id', function(req, res) {
-        tvDB(key).getSeriesById(req.params.id, function(err, data) {
+    app.get('/addShow/:seriesId', function(req, res) {
+        tvDB(key).getSeriesAllById(req.params.seriesId, function(err, data){
             var show = data.Data.Series;
+            var episode = data.Data.Episode;
+
             Show.update({
-                seriesId: show.SeriesID
+                seriesId: show.id
             }, {
                 $set: {
-                    seriesId: show.SeriesID,
+                    seriesId: show.id,
                     language: show.Language,
                     overview: show.Overview,
                     title: show.SeriesName,
@@ -52,47 +57,45 @@ module.exports = function (app) {
                         error: error // status 500
                     });
                 } else {
-                    tvDB(key).getSeriesAllById(req.params.id, function(err, data){
-                        var episode = data.Data.Episode;
-                        for (i = 0; i < Object.keys(episode).length; i++) {
-                            Episode.update({
-                                seriesId: show.SeriesID
-                            }, {
-                                $set: {
-                                    seriesId: episode[i].seriesid,
-                                    language: episode[i].Language,
-                                    overview: episode[i].Overview,
-                                    title: episode[i].EpisodeName,
-                                    imdbId: episode[i].IMDB_ID,
-                                    episodeNumber: episode[i].EpisodeNumber,
-                                    seasonNumber: episode[i].SeasonNumber,
-                                    seasonId: episode[i].seasonid
-                                }
-                            }, {
-                                upsert: true
-                            }, function(error) {
-                                if (error) {
-                                    res.status(500).json({
-                                        error: error // status 500
-                                    });
-                                }
-                            });
-                        }
-                    });
+                    for (i = 0; i < Object.keys(episode).length; i++) {
+                        Episode.update({
+                            episodeId: episode[i].id
+                        }, {
+                            $set: {
+                                episodeId: episode[i].id,
+                                seriesId: episode[i].seriesid,
+                                language: episode[i].Language,
+                                overview: episode[i].Overview,
+                                title: episode[i].EpisodeName,
+                                imdbId: episode[i].IMDB_ID,
+                                episodeNumber: episode[i].EpisodeNumber,
+                                seasonNumber: episode[i].SeasonNumber,
+                                seasonId: episode[i].seasonid
+                            }
+                        }, {
+                            upsert: true
+                        }, function(error) {
+                            if (error) {
+                                res.status(500).json({
+                                    error: error // status 500
+                                });
+                            }
+                        });
+                    }
                     res.status(200).end();
                 }
             });
         });
     });
 
-    app.get('/t/:id', function(req, res){
-        tvDB(key).getSeriesAllById(req.params.id, function(err, data){
-            res.send(data.Data.Episode);
+    app.get('/t/:seriesId', function(req, res){
+        tvDB(key).getSeriesAllById(req.params.seriesId, function(err, data){
+            res.send(data.Data);
         });
     });
 
-    app.get('/showBanner/:imdbID', function(req, res){
-        Show.find({imdbID: req.params.imdbID}, function(err, data){
+    app.get('/showBanner/:seriesId', function(req, res){
+        Show.find({seriesId: req.params.seriesId}, function(err, data){
             var banner = (data[0].bannerImg.split("/"));
             var bannerFileName = banner[1];
             res.sendFile(path.join(__dirname, '../_cache/images', bannerFileName));

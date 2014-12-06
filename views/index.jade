@@ -35,8 +35,8 @@ block content
                     td(align="center")
                         span(style="display:none;") #{show.title}
                         .imgbanner.banner
-                            a(href='/show/' + show.imdbID)
-                                img(src="/showBanner/" + show.imdbID, title=show.title).banner
+                            a(href='/show/' + show.seriesId)
+                                img(src="/showBanner/" + show.seriesId, title=show.title).banner
                     td(align="center") #{show.network}
                     td(align="center") #{show.quality}
                     td(align="center") #{show.downloadsDone} + #{show.downloadsPending}/#{show.episodes}
