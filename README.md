@@ -15,3 +15,9 @@ Most pull requests will be accepted but please comment about what the code is fo
 
 ### Errors / Hardcoded items
 At the moment you'll need sickrage running on port 8081 with the IP of 192.168.1.180 for the styles to work, the reason it's like that is I'm currently using it as a base for the whole program but I plan on writing my own styles for this or getting someone else todo it and submit a pull request, if you'd like to help with that I'd really appreciate it.
+
+##### Current "issues" that aren't bugs as such
+- IP of css file is hardcoded
+- Walker only works on files with ``/Show Folder/Show Name/S00E00 - EpisodeName.ext`` format
+- Movies don't work at all
+- Whole interface only works in English
