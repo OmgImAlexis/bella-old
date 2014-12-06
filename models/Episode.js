@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var showSchema = new mongoose.Schema({
+var episodeSchema = new mongoose.Schema({
     title: {
         type: String,
         require: true
@@ -8,8 +8,21 @@ var showSchema = new mongoose.Schema({
     imdbId: {
         type: String
     },
+    episodeNumber: {
+        type: Number,
+        require: true
+    },
+    seasonNumber: {
+        type: Number,
+        require: true
+    },
     seriesId: {
-        type: Number
+        type: Number,
+        require: true
+    },
+    seasonId: {
+        type: Number,
+        require: true
     },
     language: {
         type: String
@@ -26,27 +39,10 @@ var showSchema = new mongoose.Schema({
     posterImg: {
         type: String
     },
-    network: {
-        type: String,
-        require: true
-    },
     quality: {
-        type: String,
-        require: true
+        type: String
     },
-    downloadsDone: {
-        type: Number
-    },
-    downloadsPending: {
-        type: Number
-    },
-    episodes: {
-        type: Number
-    },
-    seasons: {
-        type: Number
-    },
-    active: {
+    downloaded: {
         type: Boolean
     },
     status: {
@@ -54,4 +50,4 @@ var showSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Show', showSchema);
+module.exports = mongoose.model('Episode', episodeSchema);

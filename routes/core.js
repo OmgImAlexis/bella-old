@@ -3,6 +3,7 @@ var fs = require("fs"),
     url = require("url"),
     path = require("path"),
     Show = require('../models/Show'),
+    Episode = require('../models/Episode'),
     tvDB = require("thetvdb-api"),
     key = "ACC8F24E58B1230C";
 
@@ -31,23 +32,62 @@ module.exports = function (app) {
         tvDB(key).getSeriesById(req.params.id, function(err, data) {
             var show = data.Data.Series;
             Show.update({
-                imdbID: show.IMDB_ID
+                seriesId: show.SeriesID
             }, {
                 $set: {
+                    seriesId: show.SeriesID,
+                    language: show.Language,
+                    overview: show.Overview,
                     title: show.SeriesName,
-                    imdbID: show.IMDB_ID,
+                    imdbId: show.IMDB_ID,
                     bannerImg: show.banner,
                     posterImg: show.poster,
                     network: show.Network
                 }
             }, {
                 upsert: true
-            }, function(err, show) {
-                if (err) res.json(500, {
-                    error: err
-                }); // status 500
-                else res.json(show); // status 200
+            }, function(error) {
+                if (error) {
+                    res.status(500).json({
+                        error: error // status 500
+                    });
+                } else {
+                    tvDB(key).getSeriesAllById(req.params.id, function(err, data){
+                        var episode = data.Data.Episode;
+                        for (i = 0; i < Object.keys(episode).length; i++) {
+                            Episode.update({
+                                seriesId: show.SeriesID
+                            }, {
+                                $set: {
+                                    seriesId: episode[i].seriesid,
+                                    language: episode[i].Language,
+                                    overview: episode[i].Overview,
+                                    title: episode[i].EpisodeName,
+                                    imdbId: episode[i].IMDB_ID,
+                                    episodeNumber: episode[i].EpisodeNumber,
+                                    seasonNumber: episode[i].SeasonNumber,
+                                    seasonId: episode[i].seasonid
+                                }
+                            }, {
+                                upsert: true
+                            }, function(error) {
+                                if (error) {
+                                    res.status(500).json({
+                                        error: error // status 500
+                                    });
+                                }
+                            });
+                        }
+                    });
+                    res.status(200).end();
+                }
             });
+        });
+    });
+
+    app.get('/t/:id', function(req, res){
+        tvDB(key).getSeriesAllById(req.params.id, function(err, data){
+            res.send(data.Data.Episode);
         });
     });
 

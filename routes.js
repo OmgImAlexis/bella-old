@@ -14,7 +14,6 @@ module.exports = function (app) {
                 recursiveRoutes(fullName);
             } else if (file.toLowerCase().indexOf('.js')) {
                 require('./' + fullName)(app);
-                console.log("require('" + fullName + "')");
             }
         });
     }
