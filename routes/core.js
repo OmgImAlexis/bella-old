@@ -5,6 +5,7 @@ var fs = require("fs"),
     Show = require('../models/Show'),
     Episode = require('../models/Episode'),
     tvDB = require("thetvdb-api"),
+    pretty = require('prettysize'),
     key = "ACC8F24E58B1230C";
 
 module.exports = function (app) {
@@ -13,6 +14,40 @@ module.exports = function (app) {
             res.render('index', {
                 shows: shows
             });
+        });
+    });
+
+    app.get('/api/addExistingShows', function(req, res){
+        var walk    = require('walk');
+        var files   = [];
+        var brokenFiles = [];
+
+        // Walker options
+        var walker  = walk.walk('/data', { followLinks: false });
+
+        walker.on('file', function(root, stat, next) {
+            // Add this file to the list of files
+            if (stat.size != 0) {
+                files.push({
+                    path: root + '/' + stat.name,
+                    showName: root.split('/').pop(),
+                    fileName: stat.name,
+                    size: pretty(stat.size)
+                });
+            } else {
+                brokenFiles.push({
+                    path: root + '/' + stat.name,
+                    showName: root.split('/').pop(),
+                    fileName: stat.name,
+                    size: pretty(stat.size)
+                });
+            }
+            next();
+        });
+
+        walker.on('end', function() {
+            if (files.length == 0) res.send({brokenFiles: brokenFiles});
+            else res.send({files: files});
         });
     });
 
@@ -121,34 +156,47 @@ module.exports = function (app) {
 
         tvDB(key).getSeries(req.params.showName, function(err, data) {
             if (!err){
-                if (data.Data.Series[0]) {
-                    for (i = 0; i < Object.keys(data.Data.Series).length; i++) {
-                        var banner = (data.Data.Series[i].banner.split("/"));
-                        var bannerFileName = banner[1];
-                        var bannerURL = 'http://thetvdb.com/banners/' + data.Data.Series[i].banner;
-                        var bannerPath = path.resolve(__dirname + '/../_cache/images/' + bannerFileName);
-                        if (fs.existsSync(bannerPath)) {
-                            console.log('File exists.');
+                if (data.Data == 0) {
+                    console.log('No results found.');
+                    res.json({error: 'No results found.'});
+                } else {
+                    if (data.Data.Series[0]) {
+                        for (i = 0; i < Object.keys(data.Data.Series).length; i++) {
+                            if (data.Data.Series[i].banner) {
+                                var banner = (data.Data.Series[i].banner.split("/"));
+                                var bannerFileName = banner[1];
+                                var bannerURL = 'http://thetvdb.com/banners/' + data.Data.Series[i].banner;
+                                var bannerPath = path.resolve(__dirname + '/../_cache/images/' + bannerFileName);
+                                if (fs.existsSync(bannerPath)) {
+                                    console.log('File exists.');
+                                } else {
+                                    download(bannerURL, bannerPath, function(){
+                                        console.log('Done!');
+                                    });
+                                }
+                            } else {
+                                console.log('No banner found.');
+                            }
+                        }
+                    } else {
+                        if (data.Data.Series.banner) {
+                            var banner = (data.Data.Series.banner.split("/"));
+                            var bannerFileName = banner[1];
+                            var bannerURL = 'http://thetvdb.com/banners/' + data.Data.Series.banner;
+                            var bannerPath = path.resolve(__dirname + '/../_cache/images/' + bannerFileName);
+                            if (fs.existsSync(bannerPath)) {
+                                console.log('File exists.');
+                            } else {
+                                download(bannerURL, bannerPath, function(){
+                                    console.log('Done!');
+                                });
+                            }
                         } else {
-                            download(bannerURL, bannerPath, function(){
-                                console.log('Done!');
-                            });
+                            console.log('No banner found.');
                         }
                     }
-                } else {
-                    var banner = (data.Data.Series.banner.split("/"));
-                    var bannerFileName = banner[1];
-                    var bannerURL = 'http://thetvdb.com/banners/' + data.Data.Series.banner;
-                    var bannerPath = path.resolve(__dirname + '/../_cache/images/' + bannerFileName);
-                    if (fs.existsSync(bannerPath)) {
-                        console.log('File exists.');
-                    } else {
-                        download(bannerURL, bannerPath, function(){
-                            console.log('Done!');
-                        });
-                    }
+                    res.send(data);
                 }
-                res.send(data);
             } else {
                 console.log('Bitch didn\'t give us any data. :sadface:');
                 res.send('Bitch didn\'t give us any data. :sadface:');
