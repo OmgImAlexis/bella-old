@@ -17,8 +17,11 @@ var showSchema = new mongoose.Schema({
     overview: {
         type: String
     },
-    nextEp: {
-        type: Date
+    airDayOfWeek: {
+        type: String
+    },
+    airTime: {
+        type: String
     },
     bannerImg: {
         type: String

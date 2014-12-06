@@ -2,6 +2,7 @@ extends ./layout
 
 block head
     link(href="http://192.168.1.180:8081/css/dark.css?1098", rel="stylesheet")
+    script(type="text/javascript", src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js")    
 
 block content
     #subMenu
@@ -31,7 +32,7 @@ block content
         tbody
             each show in shows
                 tr
-                    td(align="center") #{show.nextep}
+                    td(align="center") #{show.airDayOfWeek} @ #{show.airTime}
                     td(align="center")
                         span(style="display:none;") #{show.title}
                         .imgbanner.banner

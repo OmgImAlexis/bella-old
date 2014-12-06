@@ -47,7 +47,10 @@ module.exports = function (app) {
                     imdbId: show.IMDB_ID,
                     bannerImg: show.banner,
                     posterImg: show.poster,
-                    network: show.Network
+                    network: show.Network,
+                    status: show.Status,
+                    airDayOfWeek: show.Airs_DayOfWeek,
+                    airTime: show.Airs_Time
                 }
             }, {
                 upsert: true
@@ -82,7 +85,7 @@ module.exports = function (app) {
                             }
                         });
                     }
-                    res.status(200).end();
+                    res.redirect(301, '/');
                 }
             });
         });

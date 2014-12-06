@@ -2,6 +2,24 @@ extends ./layout
 
 block head
     link(href="http://192.168.1.180:8081/css/dark.css?1098", rel="stylesheet")
+    script.
+        $( document ).ready(function() {
+            $('input[type=submit]').on('click', function(e){
+                e.preventDefault();
+                $.get('/api/tvDB/' + $('#showName').val(), function(data){
+                    var show = data.Data.Series;
+                    var html = '';
+                    if (show[0]) {
+                        for (i = 0; i < Object.keys(data.Data.Series).length; i++) {
+                            html += JSON.stringify(show[i], null, 4);
+                        }
+                    } else {
+                        html = JSON.stringify(show, null, 4);
+                    }
+                    $('.shows').html('<pre>' + html + '</pre>');
+                });
+            });
+        });
 
 block content
     #subMenu
