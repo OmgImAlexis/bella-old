@@ -6,6 +6,7 @@ var fs = require("fs"),
     Episode = require('../models/Episode'),
     tvDB = require("thetvdb-api"),
     pretty = require('prettysize'),
+    _ = require('underscore'),
     key = "ACC8F24E58B1230C";
 
 module.exports = function (app) {
@@ -17,7 +18,7 @@ module.exports = function (app) {
         });
     });
 
-    app.get('/api/addExistingShows', function(req, res){
+    app.get('/addExistingShows', function(req, res){
         var walk    = require('walk');
         var files   = [];
         var brokenFiles = [];
@@ -54,10 +55,11 @@ module.exports = function (app) {
     app.get('/show/:seriesId', function(req, res){
         Show.find({seriesId: req.params.seriesId}).exec(function(err, show) {
             Episode.find({seriesId: req.params.seriesId}).exec(function(err, episodes) {
-                res.render('show', {
-                    show: show,
-                    episodes: episodes
-                });
+                res.send(episodes);
+                // res.render('show', {
+                //     show: show,
+                //     episodes: episodes
+                // });
             });
         });
     });
@@ -77,15 +79,15 @@ module.exports = function (app) {
                 $set: {
                     seriesId: show.id,
                     language: show.Language,
-                    overview: show.Overview,
+                    overview: (_.isEmpty(show.Overview)) ? '' : show.Overview,
                     title: show.SeriesName,
-                    imdbId: show.IMDB_ID,
+                    imdbId: (_.isEmpty(show.IMDB_ID)) ? '' : show.IMDB_ID,
                     bannerImg: show.banner,
                     posterImg: show.poster,
                     network: show.Network,
                     status: show.Status,
-                    airDayOfWeek: show.Airs_DayOfWeek,
-                    airTime: show.Airs_Time
+                    airDayOfWeek: (_.isEmpty(show.Airs_DayOfWeek)) ? '' : show.Airs_DayOfWeek,
+                    airTime: (_.isEmpty(show.Airs_Time)) ? '' : show.Airs_Time
                 }
             }, {
                 upsert: true
@@ -103,9 +105,9 @@ module.exports = function (app) {
                                 episodeId: episode[i].id,
                                 seriesId: episode[i].seriesid,
                                 language: episode[i].Language,
-                                overview: episode[i].Overview,
+                                overview: (_.isEmpty(episode[i].Overview)) ? '' : episode[i].Overview,
                                 title: episode[i].EpisodeName,
-                                imdbId: episode[i].IMDB_ID,
+                                imdbId: (_.isEmpty(episode[i].IMDB_ID)) ? '' : episode[i].IMDB_ID,
                                 episodeNumber: episode[i].EpisodeNumber,
                                 seasonNumber: episode[i].SeasonNumber,
                                 seasonId: episode[i].seasonid
@@ -120,7 +122,9 @@ module.exports = function (app) {
                             }
                         });
                     }
-                    res.redirect(301, '/');
+                    console.log('Episodes: ' + Object.keys(episode).length);
+                    console.log('Episodes Gone Through: ' + i);
+                    res.redirect(302, '/');
                 }
             });
         });

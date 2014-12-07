@@ -32,7 +32,10 @@ block content
         tbody
             each show in shows
                 tr
-                    td(align="center") #{show.airDayOfWeek} @ #{show.airTime}
+                    if (show.airDayOfWeek)
+                        td(align="center") #{show.airDayOfWeek} @ #{show.airTime}
+                    else
+                        td(align="center") Unknown
                     td(align="center")
                         span(style="display:none;") #{show.title}
                         .imgbanner.banner
