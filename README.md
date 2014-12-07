@@ -1,7 +1,7 @@
 bella
 ==================
 
-To run use ``sudo node ducking-octo-spice.js``
+To run use ``sudo node bella.js``
 
 A **LOT** of the code needs to be fixed and/or rewitten this is just me trying to port sickrage/sickbeard to node.js
 If you find any actual bugs let me know using the issues tab on the right, if it's something that is more of a hardcoded issue or something to do with an feature that's being worked on then don't worry about it as it'll be looked into as I'm working on it.
@@ -32,12 +32,12 @@ At the moment you'll need sickrage running on port 8081 with the IP of 192.168.1
 ### How to get stated with this
 [Install MongoDB](http://docs.mongodb.org/manual/installation/)
 ```
-git clone https://github.com/OmgImAlexis/ducking-octo-spice
-cd ducking-octo-spice
+git clone https://github.com/OmgImAlexis/bella
+cd bella
 npm install
-node ducking-octo-spice.js
+node bella.js
 ```
 
 I'd also suggest you install forever so you can run it without keeping a terminal open.
 
-Todo so just run ``npm install forever -g`` and then ``forever start ducking-octo-spice.js``
+Todo so just run ``npm install forever -g`` and then ``forever start bella.js``
