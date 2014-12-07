@@ -25,6 +25,7 @@
     "node-ffprobe": "^1.2.2",
     "node-kickass-json": "^0.1.1",
     "prettysize": "0.0.3",
+    "put.io-v2": "0.0.2",
     "thetvdb-api": "^0.1.0",
     "underscore": "^1.7.0",
     "walk": "^2.3.4",

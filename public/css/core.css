@@ -10,3 +10,6 @@ a:visited {
     width: 1200px;
     margin: 0 auto;
 }
+.ui-progressbar.ui-widget.ui-widget-content.ui-corner-all {
+    position: relative;
+}

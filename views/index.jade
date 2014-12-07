@@ -1,8 +1,41 @@
 extends ./layout
 
 block head
-    link(href="http://192.168.1.180:8081/css/dark.css?1098", rel="stylesheet")
-    script(type="text/javascript", src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js")    
+    link(href="http://192.168.1.180:8081/css/lib/bootstrap.css?13570", rel="stylesheet")
+    link(href="http://192.168.1.180:8081/css/browser.css?13570", rel="stylesheet")
+    link(href="http://192.168.1.180:8081/css/lib/jquery-ui-1.10.4.custom.css?13570", rel="stylesheet")
+    link(href="http://192.168.1.180:8081/css/lib/jquery.qtip-2.0.1.min.css?13570", rel="stylesheet")
+    link(href="http://192.168.1.180:8081/css/lib/pnotify.custom.min.css?13570", rel="stylesheet")
+    link(href="http://192.168.1.180:8081/css/style.css?13570", rel="stylesheet")
+    link(href="http://192.168.1.180:8081/css/dark.css?13570", rel="stylesheet")
+    script(type="text/javascript", src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js")
+    script(type="text/javscript", src="/js/jquery-ui-1.10.4.custom.min.js") 
+    script.
+        $(document).read(function(){
+            $('td div[role="progressbar"]').each(function(){
+                var show = $(this).parent().parent().data('show');
+                var progress = ((show.downloadsDone + show.downloadsPending) / show.episodes) * 100;
+                $(this).progressbar({
+                  value: progress
+                });
+                $(this).append("<div class='progressbarText' title='Downloaded: " + show.downloadsDone + " Snatched: " + show.downloadsPending + " Total: " + show.episodes + "'>" + show.downloadsDone + " + " + show.downloadsPending + " / " + show.episodes + "</div>");
+                var classvalue = progress;
+                if (classvalue<20) {
+                    classtoadd = "progress-20"
+                }
+                if (classvalue>20 && classvalue<60) {
+                    classtoadd = "progress-40"
+                }
+                if (classvalue>40 && classvalue<80) {
+                    classtoadd = "progress-60"
+                }
+                if (classvalue>80) {
+                    classtoadd = "progress-80"
+                }
+                $("> .ui-progressbar-value", this).addClass(classtoadd);
+            });
+        });
+
 
 block content
     #subMenu
@@ -31,7 +64,7 @@ block content
                 th Status
         tbody
             each show in shows
-                tr
+                tr(data-show=show)
                     if (show.airDayOfWeek)
                         td(align="center") #{show.airDayOfWeek} @ #{show.airTime}
                     else
@@ -43,6 +76,7 @@ block content
                                 img(src="/showBanner/" + show.seriesId, title=show.title).banner
                     td(align="center") #{show.network}
                     td(align="center") #{show.quality}
-                    td(align="center") #{show.downloadsDone} + #{show.downloadsPending}/#{show.episodes}
+                    td(align="center")
+                        div(role="progressbar")
                     td(align="center") #{show.active}
                     td(align="center") #{show.status}

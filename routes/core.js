@@ -9,6 +9,18 @@ var fs = require("fs"),
     _ = require('underscore'),
     key = "ACC8F24E58B1230C";
 
+var sort_by = function(field, reverse, primer){
+   var key = primer ?
+       function(x) {return primer(x[field])} :
+       function(x) {return x[field]};
+
+   reverse = [-1, 1][+!!reverse];
+
+   return function (a, b) {
+       return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
+     }
+}
+
 module.exports = function (app) {
     app.get('/', function(req, res){
         Show.find().exec(function(err, shows) {
@@ -55,11 +67,16 @@ module.exports = function (app) {
     app.get('/show/:seriesId', function(req, res){
         Show.find({seriesId: req.params.seriesId}).exec(function(err, show) {
             Episode.find({seriesId: req.params.seriesId}).exec(function(err, episodes) {
-                res.send(episodes);
-                // res.render('show', {
-                //     show: show,
-                //     episodes: episodes
-                // });
+                var s = episodes.sort(sort_by('seasonNumber', false, parseInt));
+                var seasonEpisodes = _.groupBy(episodes, 'seasonNumber');
+                // If seasonEpisodes[0] does not exist then i = 1 otherwise it's equal to 0
+                for ((seasonEpisodes[0]) ? i = 0 : i = 1; i < Object.keys(seasonEpisodes).length; i++) {
+                    seasonEpisodes[i] = seasonEpisodes[i].sort(sort_by('episodeNumber', true, parseInt));
+                }
+                res.render('show', {
+                    show: show,
+                    seasonEpisodes: seasonEpisodes
+                });
             });
         });
     });
@@ -122,8 +139,6 @@ module.exports = function (app) {
                             }
                         });
                     }
-                    console.log('Episodes: ' + Object.keys(episode).length);
-                    console.log('Episodes Gone Through: ' + i);
                     res.redirect(302, '/');
                 }
             });

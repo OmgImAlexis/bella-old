@@ -2,8 +2,9 @@ html
     head
         title
         link(href="/css/core.css", rel="stylesheet", type="text/css")
-        script(src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js")
+        script(src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js")
         block head
     body
-        .container
-            block content
+        #contentWrapper
+            #content
+                block content

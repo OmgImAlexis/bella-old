@@ -1,6 +1,7 @@
 extends ./layout
 
 block head
+    link(href="http://192.168.1.180:8081/css/lib/bootstrap.css?1098", rel="stylesheet")
     link(href="http://192.168.1.180:8081/css/dark.css?1098", rel="stylesheet")
 
 block content
@@ -18,34 +19,39 @@ block content
                 | Restart
             a.btn(href="/shutdown")
                 | Shutdown
-    table#shows.tablesorter
-        thead
-            tr
-                th.col-checkbox
-                    input(type="checkbox").seasonCheck
-                th NFO
-                th TBN
-                th Episode
-                th Name
-                th Airdate
-                th Status
-                th Search
+    table.sickbeardTable.display_show
         tbody
-            each episode in episodes
-                tr.seasonstyle
-                    td.col-checkbox
-                        input(type="checkbox", class="epCheck", id=episode.seasonNumber + "x" + episode.episodeNumber, name=episode.seasonNumber + "x" + episode.episodeNumber)
-                    td(align="center")
-                        img(src="http://192.168.1.180:8081/images/nfo-no.gif", width="23", height="11", alt="N")
-                    td(align="center")
-                        img(src="http://192.168.1.180:8081/images/tbn-no.gif", width="23", height="11", alt="N")
-                    td(align="center") #{episode.episodeNumber}
-                    td.col-name
-                        img(src="http://192.168.1.180:8081/images/info32.png", width="16", height="16").plotInfo
-                        | #{episode.title}
-                    td.col-airdata
-                        span.airdate never
-                    td.col-status Wanted
-                    td.col-search
-                        a.epSearch(id=episode.seasonNumber + "x" + episode.episodeNumber, name=episode.seasonNumber + "x" + episode.episodeNumber, href="#")
-                            img(src="http://192.168.1.180:8081/images/search16.png", width="16", height="16", title="Manual Search")
+            - for (i = 1; i < Object.keys(seasonEpisodes).length; i++)
+                tr
+                    th.row-seasonheader(colspan="13", style="width: auto;")
+                        h3
+                            a(name="Season" + i, style="position: absolute; font-size: 1px; visibility: hidden;").
+                            | Season #{i}
+                tr
+                    th.col-checkbox
+                        input(type="checkbox").seasonCheck
+                    th NFO
+                    th TBN
+                    th Episode
+                    th Name
+                    th Airdate
+                    th Status
+                    th Search
+                - for (k = 0; k < Object.keys(seasonEpisodes[i]).length; k++)
+                    tr.seasonstyle.skipped
+                        td.col-checkbox
+                            input(type="checkbox", class="epCheck", id=seasonEpisodes[i][k].seasonNumber + "x" + seasonEpisodes[i][k].episodeNumber, name=seasonEpisodes[i][k].seasonNumber + "x" + seasonEpisodes[i][k].episodeNumber)
+                        td(align="center")
+                            img(src="http://192.168.1.180:8081/images/nfo-no.gif", width="23", height="11", alt="N")
+                        td(align="center")
+                            img(src="http://192.168.1.180:8081/images/tbn-no.gif", width="23", height="11", alt="N")
+                        td(align="center") #{seasonEpisodes[i][k].episodeNumber}
+                        td.col-name
+                            img(src="http://192.168.1.180:8081/images/info32.png", width="16", height="16").plotInfo
+                            | #{seasonEpisodes[i][k].title}
+                        td.col-airdata
+                            span.airdate never
+                        td.col-status Wanted
+                        td.col-search
+                            a.epSearch(id=seasonEpisodes[i][k].seasonNumber + "x" + seasonEpisodes[i][k].episodeNumber, name=seasonEpisodes[i][k].seasonNumber + "x" + seasonEpisodes[i][k].episodeNumber, href="#")
+                                img(src="http://192.168.1.180:8081/images/search16.png", width="16", height="16", title="Manual Search")
