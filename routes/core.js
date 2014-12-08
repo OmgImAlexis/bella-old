@@ -69,9 +69,19 @@ module.exports = function (app) {
             Episode.find({seriesId: req.params.seriesId}).exec(function(err, episodes) {
                 var s = episodes.sort(sort_by('seasonNumber', false, parseInt));
                 var seasonEpisodes = _.groupBy(episodes, 'seasonNumber');
-                // If seasonEpisodes[0] does not exist then i = 1 otherwise it's equal to 0
-                for ((seasonEpisodes[0]) ? i = 0 : i = 1; i < Object.keys(seasonEpisodes).length; i++) {
-                    seasonEpisodes[i] = seasonEpisodes[i].sort(sort_by('episodeNumber', true, parseInt));
+                // If more than 1 season
+                if (Object.keys(seasonEpisodes).length > 1) {
+                    // If seasonEpisodes[0] does not exist then i = 1 otherwise it's equal to 0
+                    for ((seasonEpisodes[0]) ? i = 0 : i = 1; i < Object.keys(seasonEpisodes).length; i++) {
+                        seasonEpisodes[i] = seasonEpisodes[i].sort(sort_by('episodeNumber', false, parseInt));
+                    }
+                } else { // Only 1 season
+                    if (seasonEpisodes[0]) {
+                        seasonEpisodes[0] = seasonEpisodes[0].sort(sort_by('episodeNumber', false, parseInt));
+                    } else {
+                        seasonEpisodes[0] = seasonEpisodes[1].sort(sort_by('episodeNumber', false, parseInt));
+                        delete seasonEpisodes[1];
+                    }
                 }
                 res.render('show', {
                     show: show,

@@ -21,7 +21,7 @@ block content
                 | Shutdown
     table.sickbeardTable.display_show
         tbody
-            - for (i = 1; i < Object.keys(seasonEpisodes).length; i++)
+            - for (i = Object.keys(seasonEpisodes).length; i > 0; --i)
                 tr
                     th.row-seasonheader(colspan="13", style="width: auto;")
                         h3
@@ -37,6 +37,7 @@ block content
                     th Airdate
                     th Status
                     th Search
+                - if (Object.keys(seasonEpisodes).length == 1) i = 0;
                 - for (k = 0; k < Object.keys(seasonEpisodes[i]).length; k++)
                     tr.seasonstyle.skipped
                         td.col-checkbox
@@ -55,3 +56,5 @@ block content
                         td.col-search
                             a.epSearch(id=seasonEpisodes[i][k].seasonNumber + "x" + seasonEpisodes[i][k].episodeNumber, name=seasonEpisodes[i][k].seasonNumber + "x" + seasonEpisodes[i][k].episodeNumber, href="#")
                                 img(src="http://192.168.1.180:8081/images/search16.png", width="16", height="16", title="Manual Search")
+
+            
